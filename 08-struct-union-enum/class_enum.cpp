@@ -1,13 +1,16 @@
 #include <iostream>
 
 enum class Warning {
-    green = 0,
-    yellow = 1,
-    orange = 2,
-    red = 3
+    green,
+    yellow,
+    orange,
+    red
 };
 
 int main() {
+    auto x = Warning::green;
+    std::cout << typeid(x).name() << std::endl;
+    std::cout << static_cast<int>(x) << std::endl;
     // Verify the static cast values
     if (static_cast<int>(Warning::green) == 0) {
         std::cout << "Warning::green is 0\n";
