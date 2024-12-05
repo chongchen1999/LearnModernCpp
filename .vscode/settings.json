@@ -62,6 +62,7 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "__nullptr": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "cassert": "cpp"
     }
 }
