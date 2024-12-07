@@ -7,6 +7,8 @@ int main() {
         << static_cast<void *>(&arr[2]) << "\n";
 
     auto [a, b, c] = arr;  // Structured binding
+    std::cout << typeid(a).name() << "\n";
+    a = 10;
     std::cout << "a: " << a << ", b: " << b << ", c: " << c << "\n";
 
     std::cout << static_cast<void *>(&a) << "\n"

@@ -63,6 +63,7 @@
         "typeinfo": "cpp",
         "__nullptr": "cpp",
         "complex": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "__locale": "cpp"
     }
 }
