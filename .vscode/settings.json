@@ -64,6 +64,10 @@
         "__nullptr": "cpp",
         "complex": "cpp",
         "cassert": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "set": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp",
+        "cfenv": "cpp"
     }
 }
