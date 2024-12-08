@@ -68,6 +68,7 @@
         "set": "cpp",
         "future": "cpp",
         "shared_mutex": "cpp",
-        "cfenv": "cpp"
+        "cfenv": "cpp",
+        "__config": "cpp"
     }
 }
