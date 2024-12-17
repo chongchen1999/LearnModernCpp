@@ -1,94 +1,98 @@
 #include <iostream>
 #include <vector>
-#include <chrono> // For timing
-#include <string>
+#include <chrono>
 
-// Class with Move Constructor and Move Assignment marked noexcept
-struct WithNoexcept {
-    std::string* data;
+class MyClassNoExcept {
+private:
+    int* data;
 
-    // Constructor
-    WithNoexcept(const std::string& str) : data(new std::string(str)) {}
-
-    // Destructor (to clean up the allocated memory)
-    ~WithNoexcept() { delete data; }
-
-    // Move Constructor (noexcept)
-    WithNoexcept(WithNoexcept&& other) noexcept : data(other.data) {
-        other.data = nullptr; // Transfer ownership
+public:
+    MyClassNoExcept(int value) {
+        data = new int(value);
     }
 
-    // Move Assignment (noexcept)
-    WithNoexcept& operator=(WithNoexcept&& other) noexcept {
+    MyClassNoExcept(const MyClassNoExcept& other) {
+        data = new int(*other.data);
+    }
+
+    MyClassNoExcept(MyClassNoExcept&& other) noexcept { // noexcept
+        data = other.data;
+        other.data = nullptr;
+    }
+
+    MyClassNoExcept& operator=(MyClassNoExcept&& other) noexcept {
         if (this != &other) {
-            delete data;          // Clean up current resource
-            data = other.data;    // Transfer ownership
-            other.data = nullptr; // Invalidate source
+            delete data;
+            data = other.data;
+            other.data = nullptr;
         }
         return *this;
     }
 
-    // Copy constructor and assignment operator deleted to ensure moves are tested
-    WithNoexcept(const WithNoexcept&) = delete;
-    WithNoexcept& operator=(const WithNoexcept&) = delete;
+    ~MyClassNoExcept() {
+        delete data;
+    }
 };
 
-// Class with Move Constructor and Move Assignment *not* marked noexcept
-struct WithoutNoexcept {
-    std::string* data;
+class MyClassWithoutNoExcept {
+private:
+    int* data;
 
-    // Constructor
-    WithoutNoexcept(const std::string& str) : data(new std::string(str)) {}
-
-    // Destructor (to clean up the allocated memory)
-    ~WithoutNoexcept() { delete data; }
-
-    // Move Constructor (no noexcept)
-    WithoutNoexcept(WithoutNoexcept&& other) : data(other.data) {
-        other.data = nullptr; // Transfer ownership
+public:
+    MyClassWithoutNoExcept(int value) {
+        data = new int(value);
     }
 
-    // Move Assignment (no noexcept)
-    WithoutNoexcept& operator=(WithoutNoexcept&& other) {
+    MyClassWithoutNoExcept(const MyClassWithoutNoExcept& other) {
+        data = new int(*other.data);
+    }
+
+    MyClassWithoutNoExcept(MyClassWithoutNoExcept&& other) { // No noexcept
+        data = other.data;
+        other.data = nullptr;
+    }
+
+    MyClassWithoutNoExcept& operator=(MyClassWithoutNoExcept&& other) {
         if (this != &other) {
-            delete data;          // Clean up current resource
-            data = other.data;    // Transfer ownership
-            other.data = nullptr; // Invalidate source
+            delete data;
+            data = other.data;
+            other.data = nullptr;
         }
         return *this;
     }
 
-    // Copy constructor and assignment operator deleted to ensure moves are tested
-    WithoutNoexcept(const WithoutNoexcept&) = delete;
-    WithoutNoexcept& operator=(const WithoutNoexcept&) = delete;
+    ~MyClassWithoutNoExcept() {
+        delete data;
+    }
 };
 
-// Function to measure time for vector operations
 template <typename T>
-void measure_performance(const std::string& test_name) {
+void performanceTest(const std::string& testName) {
+    constexpr size_t SIZE = 1000000; // Number of objects to test
     std::vector<T> vec;
-    vec.reserve(1000000); // Reserve space for 1 million elements
 
-    auto start_time = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
 
-    for (int i = 0; i < 1000000; ++i) {
-        vec.emplace_back("Test Data"); // Add objects to the vector
+    // Add objects to vector to force move operations
+    for (size_t i = 0; i < SIZE; ++i) {
+        vec.emplace_back(T(i));
     }
 
-    auto end_time = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
 
-    std::chrono::duration<double> duration = end_time - start_time;
-    std::cout << test_name << " took " << duration.count() << " seconds.\n";
+    std::cout << testName << " duration: " << duration.count() << " seconds" << std::endl;
 }
 
 int main() {
-    std::cout << "Performance Test: noexcept vs no-noexcept in Move Operations\n";
+    std::cout << "Performance Comparison of noexcept vs no noexcept in move constructors:\n";
 
-    // Measure performance for WithoutNoexcept
-    measure_performance<WithoutNoexcept>("Without noexcept");
+    // Test class with noexcept
+    
 
-    // Measure performance for WithNoexcept
-    measure_performance<WithNoexcept>("With noexcept");
+    // Test class without noexcept
+    performanceTest<MyClassWithoutNoExcept>("Without noexcept");
 
+    performanceTest<MyClassNoExcept>("With noexcept");
     return 0;
 }
