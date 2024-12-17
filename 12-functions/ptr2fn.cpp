@@ -133,10 +133,15 @@ void overloadedFunctionExample() {
     // void (*pf2)(int) = f;        // Error: discards noexcept
     int (*pf3)(char) = f;          // OK
     cout << "Overloaded function example executed.\n";
+    pf1(10);
+    cout << pf3('a') << endl;
 }
 
-void f(int) noexcept {}
+void f(int) noexcept {
+    cout << "f(int) called.\n";
+}
 int f(char) {
+    cout << "f(char) called.\n";
     return 0;
 }
 
