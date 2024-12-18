@@ -70,6 +70,7 @@
         "shared_mutex": "cpp",
         "cfenv": "cpp",
         "__config": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "list": "cpp"
     }
 }
