@@ -1,0 +1,6 @@
+g++ swap.cpp -c -I../includes
+g++ add.cpp -c -I../includes
+ar rcs libtools.a add.o swap.o
+g++ main.cpp -ltools -Lsrc -Iincludes -o static_main
+g++ main.cpp -Iincludes src/swap.cpp -Iincludes src/add.cpp -Iincludes -o main
+
