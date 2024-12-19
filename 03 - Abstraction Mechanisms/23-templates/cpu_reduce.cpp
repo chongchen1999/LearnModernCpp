@@ -14,16 +14,27 @@ struct SumOp {
     }
 };
 
+template<typename T>
+struct MaxOp {
+    static const T identity;
+    T operator()(const T &a, const T &b) const {
+        return a > b ? a : b;
+    }
+};
+
 template <typename T>
-const T SumOp<T>::identity = static_cast<T>(0);
+const T SumOp<T>::identity = T{};
+
+template<typename T>
+const T MaxOp<T>::identity = T{-1e9};
 
 // CPU-based reduction
-template <typename T, class ReductionOp = SumOp<T>>
+template <typename T, template<typename> class ReductionOp>
 T cpuReduce(T *data, int N) {
-    T result = ReductionOp::identity;
+    T result = ReductionOp<T>::identity;
     #pragma omp parallel for reduction(+:result)
     for (int i = 0; i < N; ++i) {
-        result = ReductionOp(result, data[i]);
+        result = ReductionOp<T>(result, data[i]);
     }
     return result;
 }
