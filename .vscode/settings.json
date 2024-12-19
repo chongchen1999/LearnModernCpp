@@ -71,6 +71,7 @@
         "cfenv": "cpp",
         "__config": "cpp",
         "valarray": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "iomanip": "cpp"
     }
 }
