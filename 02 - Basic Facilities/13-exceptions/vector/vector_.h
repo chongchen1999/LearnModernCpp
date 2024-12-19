@@ -113,7 +113,7 @@ public:
     void push_back(const T& x) {
         if (capacity() == size())
             reserve(size() ? 2 * size() : 8);
-        vb.alloc.construct(vb.space, x);
+        new (vb.space) T(x); // 使用placement new来构造对象
         ++vb.space;
     }
 
