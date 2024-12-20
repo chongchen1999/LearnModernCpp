@@ -1,6 +1,14 @@
+Static Link:
 g++ swap.cpp -c -I../includes
 g++ add.cpp -c -I../includes
 ar rcs libtools.a add.o swap.o
 g++ main.cpp -ltools -Lsrc -Iincludes -o static_main
+./static_main
 g++ main.cpp -Iincludes src/swap.cpp -Iincludes src/add.cpp -Iincludes -o main
 
+Dynamic Link:
+g++ swap.cpp -c -I../includes -fPIC
+g++ add.cpp -c -I../includes -fPIC
+g++ -shared swap.o add.o -o libtools.so
+g++ main.cpp -Iincludes -Lsrc -ltools -o dynamic_main
+LD_LIBRARY_PATH=src ./dynamic_main
