@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++20 -g -O2 -Wall -rdynamic CMakeFiles/shoot_game.dir/main.cpp.o CMakeFiles/shoot_game.dir/src/gun.cpp.o CMakeFiles/shoot_game.dir/src/solider.cpp.o -o shoot_game 

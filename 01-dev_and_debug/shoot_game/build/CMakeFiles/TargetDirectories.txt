@@ -1,0 +1,3 @@
+/home/tourist/DIY/LearnModernCpp/01-dev_and_debug/shoot_game/build/CMakeFiles/shoot_game.dir
+/home/tourist/DIY/LearnModernCpp/01-dev_and_debug/shoot_game/build/CMakeFiles/edit_cache.dir
+/home/tourist/DIY/LearnModernCpp/01-dev_and_debug/shoot_game/build/CMakeFiles/rebuild_cache.dir
