@@ -16,5 +16,5 @@ add_subdirectory(src)
 # Add the main executable
 add_executable(main main.cpp)
 
-# Link the library from src to the main executable
-target_link_libraries(main PRIVATE gun_soldier_lib)
+# Link the shared library from src to the main executable
+target_link_libraries(main PRIVATE gun_soldier_shared)
