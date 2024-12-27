@@ -1,7 +1,7 @@
+#include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <sstream>
-#include <iostream>
 
 namespace Assert {
 
@@ -30,7 +30,8 @@ std::string compose(const char* file, int line, const std::string& message) {
 
 // Assertion checking function
 template <bool condition = level(default_level), class Except = Error>
-void dynamic(bool assertion, const std::string& message = "Assert::dynamic failed") {
+void dynamic(bool assertion,
+             const std::string& message = "Assert::dynamic failed") {
     if (assertion) return;
 
     if (current_mode == Mode::throw_) {
@@ -46,24 +47,23 @@ void dynamic<false, Error>(bool, const std::string&) {
     // Do nothing
 }
 
-} // namespace Assert
+}  // namespace Assert
 
 // Example usage
 void f(int n) {
-    const int max = 10; // Example maximum value
+    const int max = 10;  // Example maximum value
 
     // Check if n is in the range [1, max)
     Assert::dynamic<Assert::level(2), Assert::Error>(
         (n > 0 && n < max),
-        Assert::compose(__FILE__, __LINE__, "range problem")
-    );
+        Assert::compose(__FILE__, __LINE__, "range problem"));
 
     // ... Other code ...
 }
 
 int main() {
     try {
-        f(0); // Will throw an exception for failing the assertion
+        f(0);  // Will throw an exception for failing the assertion
     } catch (const Assert::Error& e) {
         std::cerr << "Assertion failed: " << e.what() << '\n';
     }

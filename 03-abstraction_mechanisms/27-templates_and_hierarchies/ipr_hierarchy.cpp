@@ -1,97 +1,106 @@
 #include <iostream>
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 int generate_id();
 
 namespace ipr {
-    // Forward declarations
-    struct Visitor;
-    struct Type;
-    struct Name;
-    struct Region;
-    
-    // Basic types that don't need full implementation for this example
-    struct Annotation {};
-    struct Unit_location {};
-    struct Source_location {};
-    struct Linkage {};
+// Forward declarations
+struct Visitor;
+struct Type;
+struct Name;
+struct Region;
 
-    enum Category_code { NodeCategory, ExprCategory, StmtCategory, DeclCategory, VarCategory };
+// Basic types that don't need full implementation for this example
+struct Annotation {};
+struct Unit_location {};
+struct Source_location {};
+struct Linkage {};
 
-    // Base class definitions
-    struct Node {
-        const int node_id;
-        const Category_code category;
-        virtual void accept(Visitor&) const = 0;
-        virtual ~Node() = default;
+enum Category_code {
+    NodeCategory,
+    ExprCategory,
+    StmtCategory,
+    DeclCategory,
+    VarCategory
+};
 
-    protected:
-        explicit Node(Category_code c) : category(c), node_id(generate_id()) {}
-    };
+// Base class definitions
+struct Node {
+    const int node_id;
+    const Category_code category;
+    virtual void accept(Visitor &) const = 0;
+    virtual ~Node() = default;
 
-    struct Expr : Node {
-        virtual const Type& type() const = 0;
-        ~Expr() override = default;
+   protected:
+    explicit Node(Category_code c) : category(c), node_id(generate_id()) {}
+};
 
-    protected:
-        explicit Expr(Category_code c) : Node(c) {}
-    };
+struct Expr : Node {
+    virtual const Type &type() const = 0;
+    ~Expr() override = default;
 
-    struct Stmt : Expr {
-        virtual const Unit_location& unit_location() const = 0;
-        virtual const Source_location& source_location() const = 0;
-        virtual const std::vector<Annotation>& annotation() const { return annotations; }
-        ~Stmt() override = default;
+   protected:
+    explicit Expr(Category_code c) : Node(c) {}
+};
 
-    protected:
-        explicit Stmt(Category_code c) : Expr(c) {}
-        std::vector<Annotation> annotations;
-    };
+struct Stmt : Expr {
+    virtual const Unit_location &unit_location() const = 0;
+    virtual const Source_location &source_location() const = 0;
+    virtual const std::vector<Annotation> &annotation() const {
+        return annotations;
+    }
+    ~Stmt() override = default;
 
-    struct Decl : Stmt {
-        enum Specifier { Static, Extern, Virtual, Public, Private };
-        virtual Specifier specifiers() const { return Static; }
-        virtual const Linkage& lang_linkage() const { return linkage; }
-        virtual const Name& name() const = 0;
-        virtual const Region& home_region() const = 0;
-        virtual bool has_initializer() const = 0;
-        virtual const Expr& initializer() const = 0;
-        ~Decl() override = default;
+   protected:
+    explicit Stmt(Category_code c) : Expr(c) {}
+    std::vector<Annotation> annotations;
+};
 
-    protected:
-        explicit Decl(Category_code c) : Stmt(c) {}
-        Linkage linkage;
-    };
+struct Decl : Stmt {
+    enum Specifier { Static, Extern, Virtual, Public, Private };
+    virtual Specifier specifiers() const { return Static; }
+    virtual const Linkage &lang_linkage() const { return linkage; }
+    virtual const Name &name() const = 0;
+    virtual const Region &home_region() const = 0;
+    virtual bool has_initializer() const = 0;
+    virtual const Expr &initializer() const = 0;
+    ~Decl() override = default;
 
-    struct Var : Decl {
-        ~Var() override = default;
-    protected:
-        explicit Var(Category_code c) : Decl(c) {}
-    };
+   protected:
+    explicit Decl(Category_code c) : Stmt(c) {}
+    Linkage linkage;
+};
 
-    // Basic type implementations
-    struct Type {
-        std::string name;
-        explicit Type(std::string n) : name(std::move(n)) {}
-    };
+struct Var : Decl {
+    ~Var() override = default;
 
-    struct Name {
-        std::string identifier;
-        explicit Name(std::string id) : identifier(std::move(id)) {}
-    };
+   protected:
+    explicit Var(Category_code c) : Decl(c) {}
+};
 
-    struct Region {
-        std::string scope;
-        explicit Region(std::string s) : scope(std::move(s)) {}
-    };
+// Basic type implementations
+struct Type {
+    std::string name;
+    explicit Type(std::string n) : name(std::move(n)) {}
+};
 
-    struct Visitor {
-        virtual void visit(const Node&) = 0;
-        virtual ~Visitor() = default;
-    };
-}
+struct Name {
+    std::string identifier;
+    explicit Name(std::string id) : identifier(std::move(id)) {}
+};
+
+struct Region {
+    std::string scope;
+    explicit Region(std::string s) : scope(std::move(s)) {}
+};
+
+struct Visitor {
+    virtual void visit(const Node &) = 0;
+    virtual ~Visitor() = default;
+};
+}  // namespace ipr
 
 // Helper function implementation
 int generate_id() {
@@ -100,56 +109,62 @@ int generate_id() {
 }
 
 namespace impl {
-    template<typename Interface>
-    struct Node : Interface {
-        explicit Node() : Interface(ipr::NodeCategory) {}
-        void accept(ipr::Visitor& v) const override { v.visit(*this); }
-    };
+template <typename Interface>
+struct Node : Interface {
+    explicit Node() : Interface(ipr::NodeCategory) {}
+    void accept(ipr::Visitor &v) const override { v.visit(*this); }
+};
 
-    template<typename Interface>
-    struct Expr : Node<Interface> {
-        const ipr::Type* constraint;
-        Expr() : Node<Interface>(), constraint(nullptr) {}
-        const ipr::Type& type() const override { return *constraint; }
-    };
+template <typename Interface>
+struct Expr : Node<Interface> {
+    const ipr::Type *constraint;
+    Expr() : Node<Interface>(), constraint(nullptr) {}
+    const ipr::Type &type() const override { return *constraint; }
+};
 
-    template<typename Interface>
-    struct Stmt : Expr<Interface> {
-        ipr::Unit_location unit_locus;
-        ipr::Source_location src_locus;
-        std::vector<ipr::Annotation> annotations;
+template <typename Interface>
+struct Stmt : Expr<Interface> {
+    ipr::Unit_location unit_locus;
+    ipr::Source_location src_locus;
+    std::vector<ipr::Annotation> annotations;
 
-        const ipr::Unit_location& unit_location() const override { return unit_locus; }
-        const ipr::Source_location& source_location() const override { return src_locus; }
-        const std::vector<ipr::Annotation>& annotation() const { return annotations; }
-    };
+    const ipr::Unit_location &unit_location() const override {
+        return unit_locus;
+    }
+    const ipr::Source_location &source_location() const override {
+        return src_locus;
+    }
+    const std::vector<ipr::Annotation> &annotation() const {
+        return annotations;
+    }
+};
 
-    template<typename Interface>
-    struct Decl : Stmt<Interface> {
-        const ipr::Name* name_ptr;
-        const ipr::Region* home_ptr;
-        ipr::Linkage linkage;
+template <typename Interface>
+struct Decl : Stmt<Interface> {
+    const ipr::Name *name_ptr;
+    const ipr::Region *home_ptr;
+    ipr::Linkage linkage;
 
-        const ipr::Name& name() const override { return *name_ptr; }
-        const ipr::Region& home_region() const override { return *home_ptr; }
-    };
+    const ipr::Name &name() const override { return *name_ptr; }
+    const ipr::Region &home_region() const override { return *home_ptr; }
+};
 
-    struct Var : Decl<ipr::Var> {
-        const ipr::Expr* init;
-        
-        Var() : init(nullptr) {
-            this->constraint = nullptr;
-            this->name_ptr = nullptr;
-            this->home_ptr = nullptr;
-        }
+struct Var : Decl<ipr::Var> {
+    const ipr::Expr *init;
 
-        bool has_initializer() const override { return init != nullptr; }
-        const ipr::Expr& initializer() const override { 
-            if (!init) throw std::runtime_error("No initializer present");
-            return *init; 
-        }
-    };
-}
+    Var() : init(nullptr) {
+        this->constraint = nullptr;
+        this->name_ptr = nullptr;
+        this->home_ptr = nullptr;
+    }
+
+    bool has_initializer() const override { return init != nullptr; }
+    const ipr::Expr &initializer() const override {
+        if (!init) throw std::runtime_error("No initializer present");
+        return *init;
+    }
+};
+}  // namespace impl
 
 int main() {
     // Create objects for the variable's properties
@@ -167,7 +182,8 @@ int main() {
     std::cout << "Variable Name: " << variable.name().identifier << '\n';
     std::cout << "Variable Type: " << variable.type().name << '\n';
     std::cout << "Variable Scope: " << variable.home_region().scope << '\n';
-    std::cout << "Has Initializer: " << (variable.has_initializer() ? "Yes" : "No") << '\n';
+    std::cout << "Has Initializer: "
+              << (variable.has_initializer() ? "Yes" : "No") << '\n';
 
     return 0;
 }

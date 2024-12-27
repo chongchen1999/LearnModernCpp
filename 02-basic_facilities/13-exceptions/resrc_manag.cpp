@@ -1,13 +1,13 @@
 #include <cstdio>
+#include <iostream>
+#include <memory>
+#include <mutex>
 #include <stdexcept>
 #include <string>
-#include <mutex>
-#include <memory>
-#include <iostream>
 
 class File_ptr {
-    FILE* p; // The managed resource (file pointer)
-public:
+    FILE* p;  // The managed resource (file pointer)
+   public:
     File_ptr(const char* n, const char* a) : p{fopen(n, a)} {
         if (!p) throw std::runtime_error{"File_ptr: Can't open file"};
     }
@@ -24,7 +24,8 @@ public:
 class Locked_file_handle {
     File_ptr file;
     std::unique_lock<std::mutex> lck;
-public:
+
+   public:
     Locked_file_handle(const char* file_name, std::mutex& m)
         : file{file_name, "rw"}, lck{m} {}
 };

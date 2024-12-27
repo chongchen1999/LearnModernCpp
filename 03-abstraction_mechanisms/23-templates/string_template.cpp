@@ -1,10 +1,10 @@
+#include <cstring>
 #include <iostream>
 #include <map>
-#include <cstring>
 
 template <typename T>
 class String {
-public:
+   public:
     T* data;
     size_t size;
 
@@ -14,15 +14,13 @@ public:
         strcpy(data, str);
     }
 
-    ~String() {
-        delete[] data;
-    }
+    ~String() { delete[] data; }
 
     bool operator<(const String& other) const {
         return strcmp(data, other.data) < 0;
     }
 
-    String(String &&other) noexcept {
+    String(String&& other) noexcept {
         data = other.data;
         size = other.size;
         other.data = nullptr;
