@@ -1,3 +1,0 @@
-/home/tourist/DIY/LearnModernCpp/01-dev_and_debug/cmake_swap/build/CMakeFiles/prog.dir
-/home/tourist/DIY/LearnModernCpp/01-dev_and_debug/cmake_swap/build/CMakeFiles/edit_cache.dir
-/home/tourist/DIY/LearnModernCpp/01-dev_and_debug/cmake_swap/build/CMakeFiles/rebuild_cache.dir

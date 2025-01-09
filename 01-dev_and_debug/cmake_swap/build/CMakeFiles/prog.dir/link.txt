@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/prog.dir/main.cpp.o CMakeFiles/prog.dir/src/swap.cpp.o CMakeFiles/prog.dir/src/add.cpp.o -o prog 
