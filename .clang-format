@@ -13,3 +13,4 @@ BraceWrapping:
     IndentBraces: false
 PointerAlignment: Right
 ReferenceAlignment: Right
+AccessModifierOffset: -4
