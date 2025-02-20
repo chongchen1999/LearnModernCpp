@@ -9,6 +9,7 @@ void example(int n) {
     printf("\n");
 }
 
+
 int main() {
     example(5);  // Creates an array of size 5
     example(8);  // Creates an array of size 8
